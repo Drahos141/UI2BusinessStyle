@@ -1,0 +1,264 @@
+<div class="app-frame" [class.drawer-expanded]="drawerExpanded">
+  <kendo-drawer-container class="workspace">
+    <kendo-drawer
+      class="navigation-drawer"
+      [items]="navigationItems"
+      [mini]="true"
+      [miniWidth]="76"
+      [width]="252"
+      [expanded]="drawerExpanded"
+      [autoCollapse]="false"
+      mode="push"
+      [animation]="drawerAnimation"
+      (select)="selectNavigation($event)"
+    >
+      <ng-template kendoDrawerHeaderTemplate>
+        <div class="brand-row">
+          <a class="brand-lockup" href="#overview" aria-label="Northstar home" (click)="goToSection('overview')">
+            <span class="brand-mark">n</span>
+            @if (drawerExpanded) {
+              <span class="brand-name">northstar<span>.</span></span>
+            }
+          </a>
+          <button
+            kendoButton
+            fillMode="flat"
+            class="drawer-toggle"
+            type="button"
+            [attr.aria-label]="drawerExpanded ? 'Collapse navigation' : 'Expand navigation'"
+            (click)="toggleDrawer()"
+          >
+            <kendo-svg-icon [icon]="menuIcon"></kendo-svg-icon>
+          </button>
+        </div>
+        @if (drawerExpanded) {
+          <div class="workspace-label">WORKSPACE <span>ACME STUDIO</span></div>
+        }
+      </ng-template>
+
+      <ng-template kendoDrawerItemTemplate let-item>
+        <span class="nav-item-icon"><kendo-svg-icon [icon]="item.icon"></kendo-svg-icon></span>
+        <span class="nav-item-label">{{ item.text }}</span>
+        @if (item.badge && drawerExpanded) {
+          <span class="nav-item-badge">{{ item.badge }}</span>
+        }
+      </ng-template>
+
+      <ng-template kendoDrawerFooterTemplate>
+        <div class="sidebar-bottom">
+          <div class="sidebar-plan">
+            <span class="plan-orbit"><kendo-svg-icon [icon]="sparklesIcon"></kendo-svg-icon></span>
+            @if (drawerExpanded) {
+              <span><strong>Northstar Pro</strong><small>Your team is thriving</small></span>
+            }
+          </div>
+          <button class="sidebar-user" type="button" (click)="toggleUserMenu()">
+            <span class="avatar avatar-lilac">OB</span>
+            @if (drawerExpanded) {
+              <span class="sidebar-user-copy"><strong>Olivia Bennett</strong><small>Workspace owner</small></span>
+              <kendo-svg-icon [icon]="chevronDownIcon"></kendo-svg-icon>
+            }
+          </button>
+        </div>
+      </ng-template>
+    </kendo-drawer>
+
+    <kendo-drawer-content class="drawer-content">
+      <div class="app-main">
+        <header class="topbar">
+          <div class="topbar-context">
+            <span class="context-dot"></span>
+            <span>Northstar Studio</span>
+            <span class="context-divider">/</span>
+            <span class="context-current">{{ activeSection }}</span>
+          </div>
+          <div class="topbar-actions">
+            @if (searchOpen) {
+              <label class="quick-search">
+                <kendo-svg-icon [icon]="searchIcon"></kendo-svg-icon>
+                <input type="search" aria-label="Search workspace" placeholder="Search anything…" [(ngModel)]="searchQuery" autofocus />
+                <button type="button" aria-label="Close search" (click)="searchOpen = false">×</button>
+              </label>
+            } @else {
+              <button kendoButton fillMode="flat" class="icon-button" type="button" aria-label="Search" (click)="searchOpen = true">
+                <kendo-svg-icon [icon]="searchIcon"></kendo-svg-icon>
+              </button>
+            }
+            <button kendoButton fillMode="flat" class="icon-button notification-button" type="button" aria-label="Notifications">
+              <kendo-svg-icon [icon]="bellIcon"></kendo-svg-icon>
+              <span class="notification-dot"></span>
+            </button>
+            <span class="topbar-separator"></span>
+            <button class="topbar-profile" type="button" [attr.aria-expanded]="userMenuOpen" (click)="toggleUserMenu()">
+              <span class="avatar avatar-lilac">OB</span>
+              <span class="profile-name">Olivia Bennett</span>
+              <kendo-svg-icon [icon]="chevronDownIcon"></kendo-svg-icon>
+            </button>
+            @if (userMenuOpen) {
+              <div class="user-menu">
+                <div class="user-menu-heading"><strong>Olivia Bennett</strong><span>olivia&#64;northstar.studio</span></div>
+                <button type="button" (click)="openLogin()">Log in to another account <kendo-svg-icon [icon]="arrowRightIcon"></kendo-svg-icon></button>
+              </div>
+            }
+          </div>
+        </header>
+
+        <main class="page-content">
+          <section class="welcome-panel" id="overview">
+            <div class="welcome-copy">
+              <div class="eyebrow"><span class="eyebrow-sparkle">✳</span> TUESDAY, MAY 21, 2024 <span class="eyebrow-divider"></span> WEEK 21</div>
+              <h1>Good morning, Olivia <span class="wave">✦</span></h1>
+              <p>Your business is moving in the right direction. Here’s your studio at a glance.</p>
+              <div class="welcome-actions">
+                <button kendoButton themeColor="primary" class="primary-action" type="button" (click)="showToast('Your report is being prepared')">
+                  <kendo-svg-icon [icon]="plusIcon"></kendo-svg-icon> Create new report
+                </button>
+                <button kendoButton fillMode="flat" class="date-action" type="button" (click)="toggleDateRange()">
+                  <kendo-svg-icon [icon]="calendarIcon"></kendo-svg-icon> {{ dateRange }} <kendo-svg-icon [icon]="chevronDownIcon"></kendo-svg-icon>
+                </button>
+              </div>
+            </div>
+            <div class="welcome-art" aria-hidden="true">
+              <div class="art-glow"></div>
+              <div class="art-orbit orbit-one"></div>
+              <div class="art-orbit orbit-two"></div>
+              <div class="art-disc"><span>n</span></div>
+              <span class="art-star star-one">✳</span>
+              <span class="art-star star-two">✦</span>
+              <span class="art-note note-one">IDEAS IN MOTION</span>
+              <span class="art-note note-two">GROW WITH INTENTION</span>
+            </div>
+          </section>
+
+          <section class="metrics-grid" aria-label="Business overview">
+            <kendo-card class="metric-card">
+              <kendo-card-body>
+                <div class="metric-top"><span class="metric-label">Total revenue</span><span class="metric-icon revenue-icon">↗</span></div>
+                <div class="metric-value">$84,254<span class="metric-cents">.00</span></div>
+                <div class="metric-foot"><span class="trend positive"><kendo-svg-icon [icon]="arrowUpIcon"></kendo-svg-icon> 12.8%</span><span>vs. previous period</span></div>
+                <div class="metric-spark spark-revenue" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+              </kendo-card-body>
+            </kendo-card>
+            <kendo-card class="metric-card">
+              <kendo-card-body>
+                <div class="metric-top"><span class="metric-label">Active clients</span><span class="metric-icon clients-icon"><kendo-svg-icon [icon]="usersIcon"></kendo-svg-icon></span></div>
+                <div class="metric-value">1,429</div>
+                <div class="metric-foot"><span class="trend positive"><kendo-svg-icon [icon]="arrowUpIcon"></kendo-svg-icon> 8.2%</span><span>vs. previous period</span></div>
+                <div class="avatar-stack" aria-label="Recent new clients"><span class="mini-avatar mini-peach">JR</span><span class="mini-avatar mini-blue">AM</span><span class="mini-avatar mini-green">SK</span><span class="mini-avatar mini-more">+8</span><small>joined this month</small></div>
+              </kendo-card-body>
+            </kendo-card>
+            <kendo-card class="metric-card">
+              <kendo-card-body>
+                <div class="metric-top"><span class="metric-label">Project completion</span><span class="metric-icon projects-icon"><kendo-svg-icon [icon]="briefcaseIcon"></kendo-svg-icon></span></div>
+                <div class="metric-value">92<span class="metric-percent">%</span></div>
+                <div class="metric-foot"><span class="trend positive"><kendo-svg-icon [icon]="arrowUpIcon"></kendo-svg-icon> 4.6%</span><span>vs. previous period</span></div>
+                <div class="progress-track"><span class="progress-fill"></span><small>On track</small></div>
+              </kendo-card-body>
+            </kendo-card>
+            <kendo-card class="metric-card">
+              <kendo-card-body>
+                <div class="metric-top"><span class="metric-label">Customer happiness</span><span class="metric-icon happiness-icon">♡</span></div>
+                <div class="metric-value">98<span class="metric-percent">%</span></div>
+                <div class="metric-foot"><span class="trend positive"><kendo-svg-icon [icon]="arrowUpIcon"></kendo-svg-icon> 2.1%</span><span>vs. previous period</span></div>
+                <div class="satisfaction-row"><span class="satisfaction-stars">★★★★★</span><span>Lovely work, team!</span></div>
+              </kendo-card-body>
+            </kendo-card>
+          </section>
+
+          <section class="content-grid" id="performance">
+            <kendo-card class="panel-card revenue-panel">
+              <kendo-card-header>
+                <div class="panel-heading"><div><span class="section-kicker">THE BIG PICTURE</span><h2>Revenue overview</h2></div><button class="more-button" type="button" aria-label="Revenue options">•••</button></div>
+              </kendo-card-header>
+              <kendo-card-body>
+                <div class="chart-summary"><div><strong>$84,254</strong><span class="trend positive"><kendo-svg-icon [icon]="arrowUpIcon"></kendo-svg-icon> 12.8%</span></div><span>Revenue is up <strong>12.8%</strong> from last month</span></div>
+                <div class="revenue-chart" role="img" aria-label="Revenue grew steadily from January to July">
+                  <div class="chart-y-labels"><span>$100k</span><span>$75k</span><span>$50k</span><span>$25k</span><span>$0</span></div>
+                  <svg viewBox="0 0 760 220" preserveAspectRatio="none" aria-hidden="true">
+                    <defs><linearGradient id="chartFill" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#b9d3a9" stop-opacity=".48"></stop><stop offset="100%" stop-color="#b9d3a9" stop-opacity="0"></stop></linearGradient></defs>
+                    <path class="chart-area" d="M0 180 C40 165 55 172 90 151 S145 155 190 132 S245 144 285 115 S340 128 380 96 S435 110 475 82 S535 101 570 68 S625 77 665 47 S720 53 760 20 V220 H0 Z"></path>
+                    <path class="chart-line" d="M0 180 C40 165 55 172 90 151 S145 155 190 132 S245 144 285 115 S340 128 380 96 S435 110 475 82 S535 101 570 68 S625 77 665 47 S720 53 760 20"></path>
+                    <circle cx="570" cy="68" r="5"></circle>
+                  </svg>
+                  <div class="chart-x-labels"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span></div>
+                </div>
+                <div class="chart-legend"><span><i></i>This year</span><span><i></i>Last year</span></div>
+              </kendo-card-body>
+            </kendo-card>
+
+            <kendo-card class="panel-card activity-panel" id="insights">
+              <kendo-card-header>
+                <div class="panel-heading"><div><span class="section-kicker">WHAT'S HAPPENING</span><h2>Recent activity</h2></div><button class="text-link" type="button" (click)="showToast('You’re all caught up!')">View all <kendo-svg-icon [icon]="arrowRightIcon"></kendo-svg-icon></button></div>
+              </kendo-card-header>
+              <kendo-card-body>
+                <div class="activity-list">
+                  <article class="activity-item"><span class="activity-icon activity-bill">↗</span><div><strong>New invoice paid</strong><p>Invoice #INV-2048 · Greenfield Co.</p></div><time>12 min</time></article>
+                  <article class="activity-item"><span class="activity-icon activity-project"><kendo-svg-icon [icon]="briefcaseIcon"></kendo-svg-icon></span><div><strong>Project milestone reached</strong><p>Brand refresh · 75% complete</p></div><time>1 hr</time></article>
+                  <article class="activity-item"><span class="activity-icon activity-person">✳</span><div><strong>New client onboarded</strong><p>Jamie Rivera · Design retainer</p></div><time>3 hrs</time></article>
+                  <article class="activity-item"><span class="activity-icon activity-comment">“</span><div><strong>You received a testimonial</strong><p>“The team made it feel effortless.”</p></div><time>Yesterday</time></article>
+                </div>
+              </kendo-card-body>
+            </kendo-card>
+          </section>
+
+          <section class="content-grid secondary-grid">
+            <kendo-card class="panel-card projects-panel" id="projects">
+              <kendo-card-header>
+                <div class="panel-heading"><div><span class="section-kicker">MADE WITH MOMENTUM</span><h2>Projects in motion</h2></div><button class="text-link" type="button" (click)="navigateTo('Projects')">All projects <kendo-svg-icon [icon]="arrowRightIcon"></kendo-svg-icon></button></div>
+              </kendo-card-header>
+              <kendo-card-body>
+                <div class="project-table">
+                  <div class="project-row project-header"><span>PROJECT</span><span>TEAM</span><span>STATUS</span><span>PROGRESS</span></div>
+                  <div class="project-row"><span class="project-name"><i class="project-color project-lilac"></i><span><strong>Brand identity refresh</strong><small>Greenfield Co. · Due Jun 12</small></span></span><span class="project-avatars"><i class="mini-avatar mini-blue">AM</i><i class="mini-avatar mini-peach">JR</i><i class="mini-avatar mini-green">SK</i></span><span class="status-pill status-review">In review</span><span class="project-progress"><i><b style="width: 76%"></b></i><small>76%</small></span></div>
+                  <div class="project-row"><span class="project-name"><i class="project-color project-mint"></i><span><strong>Summer campaign</strong><small>Haven &amp; Hearth · Due Jun 18</small></span></span><span class="project-avatars"><i class="mini-avatar mini-peach">JR</i><i class="mini-avatar mini-pink">ML</i><i class="mini-avatar mini-more">+1</i></span><span class="status-pill status-progress">In progress</span><span class="project-progress"><i><b style="width: 48%"></b></i><small>48%</small></span></div>
+                  <div class="project-row"><span class="project-name"><i class="project-color project-yellow"></i><span><strong>Website experience</strong><small>Northline Health · Due Jun 24</small></span></span><span class="project-avatars"><i class="mini-avatar mini-green">SK</i><i class="mini-avatar mini-blue">AM</i></span><span class="status-pill status-start">Just started</span><span class="project-progress"><i><b style="width: 22%"></b></i><small>22%</small></span></div>
+                </div>
+              </kendo-card-body>
+            </kendo-card>
+
+            <kendo-card class="panel-card team-panel" id="team">
+              <kendo-card-header>
+                <div class="panel-heading"><div><span class="section-kicker">YOUR PEOPLE, YOUR POWER</span><h2>Team pulse</h2></div><button class="more-button" type="button" aria-label="Team options">•••</button></div>
+              </kendo-card-header>
+              <kendo-card-body>
+                <div class="team-summary"><div class="team-score">8.9<span>/10</span></div><div><strong>Feeling good together</strong><p>Team energy is up this month.</p></div></div>
+                <div class="team-meter"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <div class="team-meter-labels"><span>Needs a boost</span><span>On cloud nine</span></div>
+                <div class="team-note"><span>✳</span> <strong>Small wins add up.</strong> Your team celebrated 14 milestones this week.</div>
+              </kendo-card-body>
+            </kendo-card>
+          </section>
+
+          <footer class="page-footer">
+            <span>© 2024 Northstar Studio</span>
+            <span>Made for people building good things <i>✳</i></span>
+            <div><a href="#overview">Help center</a><a href="#overview">Privacy</a><a href="#overview">Status <i class="status-dot"></i></a></div>
+          </footer>
+        </main>
+      </div>
+    </kendo-drawer-content>
+  </kendo-drawer-container>
+
+  @if (loginOpen) {
+    <div class="modal-scrim" (click)="closeLogin()" (keydown.escape)="closeLogin()">
+      <section class="login-dialog" role="dialog" aria-modal="true" aria-labelledby="login-title" (click)="$event.stopPropagation()">
+        <button class="modal-close" type="button" aria-label="Close login" (click)="closeLogin()">×</button>
+        <span class="login-mark">n</span>
+        <span class="section-kicker">WELCOME BACK</span>
+        <h2 id="login-title">Make room for what’s next.</h2>
+        <p class="login-intro">Sign in to your Northstar workspace and pick up where you left off.</p>
+        <form (ngSubmit)="submitLogin()">
+          <label>Email address<input type="email" name="email" [(ngModel)]="loginEmail" autocomplete="email" required /></label>
+          <label>Password<input type="password" name="password" [(ngModel)]="loginPassword" autocomplete="current-password" required /></label>
+          @if (loginError) { <p class="login-error" role="alert">Please enter your email and password to continue.</p> }
+          <button kendoButton themeColor="primary" class="primary-action login-submit" type="submit">Continue to workspace <kendo-svg-icon [icon]="arrowRightIcon"></kendo-svg-icon></button>
+        </form>
+        <p class="login-footnote">New around here? <button type="button" (click)="showToast('Your workspace invitation is on its way')">Create an account</button></p>
+      </section>
+    </div>
+  }
+
+  @if (toastMessage) {
+    <div class="toast-message" role="status"><span>✳</span>{{ toastMessage }}<button type="button" aria-label="Dismiss message" (click)="toastMessage = ''">×</button></div>
+  }
+</div>
